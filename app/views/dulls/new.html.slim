@@ -1,0 +1,14 @@
+h1
+  | CSVモデルの作成
+hr
+.container-fluid
+  = form_for(@record) do |f|
+    - key = :csv_file
+    div
+      = f.label key, "CSVファイルの選択", class:"form-label"
+      = f.file_field key, class: 'form-control form-control-sm'
+
+    = f.submit "作成",
+      type: 'submit',
+      data: { disable_with: '送信中...'},
+      class: "btn btn-primary mt-2"

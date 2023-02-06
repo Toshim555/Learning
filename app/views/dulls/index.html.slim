@@ -1,0 +1,16 @@
+h1
+    | CSVツール
+hr
+  .container-fluid
+    .row
+      .col-6
+        = link_to "新規作成", new_dull_path
+      .col-6
+        table 
+          thead 
+            th ファイル名
+          tbody
+            - Dull.all.each do |dull|
+              tr
+                td
+                  = link_to dull.csv_file.filename, dull_path(dull.id)

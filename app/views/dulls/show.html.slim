@@ -1,0 +1,21 @@
+
+h1
+  | CSVファイルの表示
+= button_to  "戻る", {controller: 'dulls',action: 'index'},{method: :get}
+= form_with model: [:filtered, @record] do |f|
+  = f.text_field :filter_text
+  = f.submit 
+  
+
+- if @record.csv_file.attached?
+  - csv = CSV.parse(@record.csv_file.download, headers: true)
+  table
+    thead
+      - heads = csv.headers
+      - heads.each do |head|
+        th[style="background-color: #BBB;width: calc(100%/#{heads.count})"]= NKF.nkf("-w -Z4", head)
+    tbody
+      - CSV.parse(@record.csv_file.download).drop(1).each do |row|
+        tr
+          - row.each do |col|
+            td = NKF.nkf("-w -Z4", col) if col
