@@ -2,10 +2,12 @@
 h1
   | CSVファイルの表示
 = button_to  "戻る", {controller: 'dulls',action: 'index'},{method: :get}
-= form_with model: [:filtered, @record] do |f|
-  = f.text_field :filter_text
-  = f.submit 
-  
+= form_tag [:filtered, :dull], { method: :patch } do
+  = text_field_tag :filter_text
+  = button_tag "絞り込み",
+        type: 'button',
+        onclick: 'submit();',
+        class: "btn btn-outline-primary btn-sm col-form-no-label"
 
 - if @record.csv_file.attached?
   - csv = CSV.parse(@record.csv_file.download, headers: true)
@@ -15,7 +17,13 @@ h1
       - heads.each do |head|
         th[style="background-color: #BBB;width: calc(100%/#{heads.count})"]= NKF.nkf("-w -Z4", head)
     tbody
-      - CSV.parse(@record.csv_file.download).drop(1).each do |row|
-        tr
-          - row.each do |col|
-            td = NKF.nkf("-w -Z4", col) if col
+      - if @filtered_csv.present?
+        - @filtered_csv.each do |row|
+          tr
+            - row.each do |col|
+              td= NKF.nkf("-w -Z4", col[1])
+      - elsif @record.csv_file.attached?
+        - CSV.parse(@record.csv_file.download).drop(1).each do |row|
+          tr
+            - row.each do |col|
+              td = NKF.nkf("-w -Z4", col) if col
